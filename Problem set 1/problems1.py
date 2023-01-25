@@ -3,10 +3,10 @@ import numpy as np
 from functions import *
 
 delay_steps = 50
-time_steps = 500
+time_steps = 1000
 h = 0.1
 T_arr = np.linspace(0.1, 5, num=delay_steps)
-t_arr = np.linspace(0, 49, num=time_steps)
+t_arr = np.linspace(0, 50, num=time_steps)
 A = 20
 K = 100
 r = 0.1
@@ -18,7 +18,7 @@ all_sols = np.zeros((delay_steps, time_steps))
 for i in range(delay_steps):
     N = np.zeros(time_steps)
 
-    for j in range(time_steps):
+    for j in range(0, time_steps):
         T = T_arr[i]
         t = t_arr[j]
 
@@ -30,6 +30,27 @@ for i in range(delay_steps):
 
     all_sols[i] = N
 
-plt.plot(t_arr, all_sols[30])
-plt.show()
+
+clear_dir('graphics/img')
+for T in range(delay_steps):
+    plt.figure()
+    plt.plot(t_arr[100:1000], all_sols[T, 100:1000])
+    plt.xlabel('t')
+    plt.ylabel('N(t)')
+    plt.title('T='+str(round(T_arr[T], 2)))
+    plt.savefig('graphics/img/T'+str(round(T_arr[T], 2))+'.png')
+    plt.close()
+
+
+clear_dir('graphics/img')
+for T in range(delay_steps):
+    plt.figure()
+    plt.plot(all_sols[T, T+100:time_steps], all_sols[T, 100:(time_steps-T)])
+    plt.xlabel('N(t)')
+    plt.ylabel('N(t-T)')
+    plt.title('T='+str(round(T_arr[T], 2)))
+    plt.savefig('graphics/img/T'+str(round(T_arr[T], 2))+'.png')
+    plt.close()
+
+
 
