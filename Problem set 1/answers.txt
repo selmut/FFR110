@@ -1,0 +1,7 @@
+A: See images
+B: After T=1 the system starts showing oscillating behaviour.
+C: At T=4.5 the system shows a limit cycle. Before this, it shows a stable spiral towards a stable F.P.
+   and after this the trajectories start to spiral out from the F.P.
+
+
+

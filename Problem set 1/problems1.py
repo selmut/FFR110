@@ -1,56 +1,62 @@
-import matplotlib.pyplot as plt
 import numpy as np
-from functions import *
+import matplotlib.pyplot as plt
 
-delay_steps = 50
-time_steps = 1000
-h = 0.1
-T_arr = np.linspace(0.1, 5, num=delay_steps)
-t_arr = np.linspace(0, 50, num=time_steps)
 A = 20
 K = 100
 r = 0.1
-N0 = 50
+N_0 = 50
+T = 1.1
+T_arr = np.linspace(0.1, 5, num=50)
+dt = 0.01
+totalTime = 500
+
+t = []
+Ndot = []
+
+nTimesteps = int(totalTime / dt)
+N = np.empty(nTimesteps)
+
+for i in range(nTimesteps):
+    N[i] = N_0
+    t.append(i * dt)
+
+Tind = int(T/dt)
+
+for i in range(nTimesteps-1):
+    NdotTemp = r * N[i] * (1 - N[i-Tind] / K) * (N[i] / A - 1)
+    Ndot.append(NdotTemp)
+    N[i+1] = (NdotTemp*dt+N[i])
 
 
-all_sols = np.zeros((delay_steps, time_steps))
-
-for i in range(delay_steps):
-    N = np.zeros(time_steps)
-
-    for j in range(0, time_steps):
-        T = T_arr[i]
-        t = t_arr[j]
-
-        if t-T <= 0:
-            N[j] = N0
-        else:
-            diff = allee(r, N, i, j, K, A)
-            N[j] = eulerFWD(N[j-1], diff, h)
-
-    all_sols[i] = N
+fig = plt.figure()
+plt.plot(t, N)
+plt.xlabel("t")
+plt.ylabel("N")
+plt.title("T=%.1f" % T)
+plt.savefig('graphics/saved_img/oscillations_T'+str(T)+'.png')
 
 
-clear_dir('graphics/img')
-for T in range(delay_steps):
-    plt.figure()
-    plt.plot(t_arr[100:1000], all_sols[T, 100:1000])
-    plt.xlabel('t')
-    plt.ylabel('N(t)')
-    plt.title('T='+str(round(T_arr[T], 2)))
-    plt.savefig('graphics/img/T'+str(round(T_arr[T], 2))+'.png')
-    plt.close()
+NCut = N[:len(N)-Tind]
+NTCut = N[Tind:]
+
+fig = plt.figure()
+plt.plot(NTCut, NCut)
+plt.xlabel("N(t-T)")
+plt.ylabel("N(t)")
+plt.title("T=%.1f" % T)
+plt.savefig('graphics/saved_img/cycle_T'+str(T)+'.png')
 
 
-clear_dir('graphics/img')
-for T in range(delay_steps):
-    plt.figure()
-    plt.plot(all_sols[T, T+100:time_steps], all_sols[T, 100:(time_steps-T)])
-    plt.xlabel('N(t)')
-    plt.ylabel('N(t-T)')
-    plt.title('T='+str(round(T_arr[T], 2)))
-    plt.savefig('graphics/img/T'+str(round(T_arr[T], 2))+'.png')
-    plt.close()
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(8, 3))
+fig.suptitle("T=%.1f" % T)
+
+ax1.plot(t, N)
+ax1.set_xlabel('t')
+ax1.set_ylabel('N')
+ax2.set_xlabel("N(t-T)")
+ax2.set_ylabel("N(t)")
+ax2.plot(NTCut, NCut)
+
 
 
 
