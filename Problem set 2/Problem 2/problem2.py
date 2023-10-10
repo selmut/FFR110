@@ -8,7 +8,7 @@ a = 3
 b = 8
 Du = 1
 Dv_arr = [2.3, 3, 5, 9]
-T = 1000#0
+T = 10000
 h = 0.01
 
 ustar = a
@@ -18,7 +18,7 @@ rand = np.random.randint(0, 10, size=(L+2, L+2))*0.01
 grid_u = np.ones((L+2, L+2, T))*ustar
 grid_v = np.ones((L+2, L+2, T))*vstar
 grid_u[:, :, 0] += rand*ustar
-grid_v[:, :, 0] += +rand*vstar
+grid_v[:, :, 0] += rand*vstar
 
 for Dv in Dv_arr:
     rows, cols, time = np.shape(grid_u)
@@ -43,11 +43,11 @@ for Dv in Dv_arr:
     print('Min: ', np.min(grid_u[:128, :128, -1]))
     print('Max: ', np.max(grid_u[:128, :128, -1]))
 
-    fig, (ax1, ax2) = plt.subplots(1, 2)
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 7))
     map1 = ax1.imshow(grid_u[:128, :128, 999], cmap='summer', vmin=0, vmax=15)
     map2 = ax2.imshow(grid_u[:128, :128, -1], cmap='summer', vmin=0, vmax=15)
-    fig.colorbar(map1, ax=ax1)
-    fig.colorbar(map2, ax=ax2)
+    fig.colorbar(map1, fraction=0.046, pad=0.04)
+    fig.colorbar(map2, fraction=0.046, pad=0.04)
     ax1.title.set_text(r'$T=1000$')
     ax2.title.set_text(r'$T=10\,000$')
     fig.savefig('graphics/heatmap' + str(Dv) + '.png')
